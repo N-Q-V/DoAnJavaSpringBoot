@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<div th:replace="layouts/admin-layout :: layout(~{::content})">
+    <div th:fragment="content">
+        <section class="container mt-4">
+            <h2 class="mb-4">Category</h2>
+            <a th:href="@{/admin/category/form}" class="btn btn-primary mb-3">
+                <i class="bi bi-plus-circle"></i> <span>Add new category</span>
+            </a>
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <table class="table table-bordered table-striped table-hover align-middle text-center">
+                        <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Category ID</th>
+                            <th scope="col">Category Name</th>
+                            <th scope="col">Category Image</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="c : ${categories}">
+                            <td th:text="${c.id}">1</td>
+                            <td th:text="${c.categoryName}">Shoes</td>
+                            <td>
+                                <img th:src="@{${c.categoryImage}}" alt="Category Image" class="img-thumbnail"
+                                     style="width: 80px; height: auto;">
+                            </td>
+                            <td>
+                                <a th:href="@{'/admin/category/edit?id='+${c.id}}" class="btn btn-sm btn-warning me-1">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                <a th:href="@{'/admin/category/delete?id='+${c.id}}" class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</html>

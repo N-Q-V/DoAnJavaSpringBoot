@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+</head>
+<body>
+<div th:replace="layouts/user-layout :: layout(~{::content})">
+    <div th:fragment="content">
+
+        <!-- Start Banner Area -->
+        <section class="banner-area organic-breadcrumb">
+            <div class="container">
+                <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                    <div class="col-first">
+                        <h1>Shopping Cart</h1>
+                        <nav class="d-flex align-items-center">
+                            <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                            <a href="category.html">Cart</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Banner Area -->
+
+        <!--================Cart Area =================-->
+        <section class="cart_area">
+            <div class="container">
+                <div class="cart_inner">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <div th:if="${successMessage}" class="alert alert-success">
+                                <span th:text="${successMessage}"></span>
+                            </div>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${cartItems}">
+                                <td>
+                                    <div class="media">
+                                        <div class="d-flex">
+                                            <img th:src="${item.getProduct().productImage}" width="50px" alt="">
+                                        </div>
+                                        <div class="media-body">
+                                            <p th:text="${item.getProduct().productName}">
+                                                Minimalistic shop for multipurpose use
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <h5 th:text="${item.getProduct().productPrice}">$360.00</h5>
+                                </td>
+                                <td>
+                                    <form th:action="@{/home/cart/update}" method="post" class="d-inline update-form">
+                                        <input type="hidden" name="id" th:value="${item.getProduct().productId.getId()}">
+                                        <div class="input-group input-group-sm">
+                                            <button class="btn btn-outline-secondary btn-sm btn-minus" type="button">−</button>
+                                            <input type="number" name="quantity" class="form-control text-center quantity-input"
+                                                   min="1" th:value="${item.getQuantity()}" style="max-width: 60px;" readonly>
+                                            <button class="btn btn-outline-secondary btn-sm btn-plus" type="button">+</button>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td>
+                                    <h5 th:text="${item.getTotalPrice()}">$720.00</h5>
+                                </td>
+                                <td>
+                                    <form th:action="@{/home/cart/remove}" method="post"
+                                          onsubmit="return confirm('Are u sure?');"
+                                          style="display: inline;">
+                                        <input type="hidden" name="id" th:value="${item.getProduct().productId.id}">
+                                        <button type="submit" class="btn btn-sm">
+                                            <i class="bi bi-trash"></i> X
+                                        </button>
+                                    </form>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td><h5>Subtotal</h5></td>
+                                <td>
+                                    <h5><span th:text="${totalPrice}"></span></h5>
+                                </td>
+                                <td></td>
+                            </tr>
+
+                            <tr class="out_button_area">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div class="checkout_btn_inner d-flex align-items-center">
+                                        <a class="gray_btn" th:href="@{/home/category}">Continue Shopping</a>
+                                        <a class="primary-btn" th:href="@{/home/cart/checkout}">Proceed to checkout</a>
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--================End Cart Area =================-->
+
+    </div>
+</div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.update-form').forEach(function (form) {
+            const minusBtn = form.querySelector('.btn-minus');
+            const plusBtn = form.querySelector('.btn-plus');
+            const input = form.querySelector('.quantity-input');
+
+            minusBtn.addEventListener('click', function () {
+                let current = parseInt(input.value);
+                if (current > 1) {
+                    input.value = current - 1;
+                    form.submit();
+                }
+            });
+
+            plusBtn.addEventListener('click', function () {
+                let current = parseInt(input.value);
+                input.value = current + 1;
+                form.submit();
+            });
+        });
+    });
+</script>
+</html>

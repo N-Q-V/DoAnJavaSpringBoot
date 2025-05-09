@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Order</title>
+
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Bootstrap Icons -->
+    <link th:href="@{/css/bootstrap-icons.css}" rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+
+<!-- Layout master -->
+<div th:replace="layouts/admin-layout :: layout(~{::content})">
+    <div th:fragment="content">
+        <section class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-primary">List of Orders</h2>
+            </div>
+
+            <div class="table-responsive shadow rounded">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-dark text-center">
+                    <tr>
+                        <th scope="col">Order Date</th>
+                        <th scope="col">Customer Name</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Order Details</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="o : ${orders}" class="text-center">
+                        <td th:text="${#temporals.format(o.orderDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${o.customerName}"></td>
+                        <td th:text="${o.address}"></td>
+                        <td th:text="${o.phone}"></td>
+                        <td th:text="${o.email}"></td>
+                        <td class="text-start text-center">
+                            <a th:href="@{'/admin/orderDetail?id=' + ${o.id}}">Click</a>
+                        </td>
+                        <td class="text-start text-center">
+                            <label>
+                                <select class="form-select" name="status"
+                                        th:attr="onchange=|updateStatus(${o.id}, this)|">
+                                    <option th:each="s : ${statuses}"
+                                            th:value="${s}"
+                                            th:text="${s}"
+                                            th:selected="${o.status == s}">
+                                    </option>
+                                </select>
+                            </label>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav th:if="${orders.totalPages > 1}" class="mt-4" aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li th:classappend="${orders.first} ? 'disabled'" class="page-item">
+                        <a class="page-link"
+                           th:href="@{/admin/order(page=${orders.number - 1}, size=${pageSize})}">
+                            &laquo;
+                        </a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'" class="page-item">
+                        <a class="page-link"
+                           th:href="@{/admin/order(page=${i}, size=${pageSize})}"
+                           th:text="${i + 1}"></a>
+                    </li>
+                    <li th:classappend="${orders.last} ? 'disabled'" class="page-item">
+                        <a class="page-link"
+                           th:href="@{/admin/order(page=${orders.number + 1}, size=${pageSize})}">
+                            &raquo;
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script>
+    // Hàm AJAX để cập nhật status khi thay đổi
+    function updateStatus(orderId, selectElement) {
+        const newStatus = selectElement.value;
+        setSelectColor(selectElement);
+        const csrfToken = $('meta[name="_csrf"]').attr('content');
+        const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+        $.ajax({
+            url: '/admin/order/update-status',
+            type: 'POST',
+            data: {
+                id: orderId,
+                status: newStatus
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
+            success: function (response) {
+                alert('Order status updated successfully');
+            },
+            error: function (xhr) {
+                alert('Error updating order status: ' + xhr.responseText);
+            }
+        });
+    }
+    function setSelectColor(selectElement) {
+        const status = selectElement.value;
+        selectElement.classList.remove("bg-warning", "bg-primary", "bg-success", "text-white");
+
+        switch(status) {
+            case "Processing":
+                selectElement.classList.add("bg-warning", "text-white");
+                break;
+            case "Shipping":
+                selectElement.classList.add("bg-primary", "text-white");
+                break;
+            case "Delivered":
+                selectElement.classList.add("bg-success", "text-white");
+                break;
+        }
+    }
+
+    // Khởi tạo màu ban đầu khi load trang
+    $(document).ready(function () {
+        $("select[name='status']").each(function () {
+            setSelectColor(this);
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sản phẩm</title>
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Bootstrap Icons -->
+    <link th:href="@{/css/bootstrap-icons.css}" rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Layout master -->
+<div th:replace="layouts/admin-layout :: layout(~{::content})">
+    <div th:fragment="content">
+        <section class="container mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0" th:text="#{product.list}">Danh sách sản phẩm</h2>
+
+                <!-- Form chọn ngôn ngữ -->
+                <form method="get" th:action="@{/admin/product}" class="d-inline-block">
+                    <div class="input-group">
+                        <label class="input-group-text" for="langSelect" th:text="#{product.language}">Select
+                            language</label>
+                        <select name="lang" id="langSelect" class="form-select" onchange="this.form.submit()">
+                            <option value="en" th:selected="${#locale.language == 'en'}">English</option>
+                            <option value="vi" th:selected="${#locale.language == 'vi'}">Tiếng Việt</option>
+                        </select>
+                    </div>
+                </form>
+                <a th:href="@{/admin/product/form}" class="btn btn-primary mt-2">
+                    <i class="bi bi-plus-circle"></i> <span th:text="#{product.add}">Thêm sản phẩm</span>
+                </a>
+            </div>
+
+            <!-- Bảng hiển thị sản phẩm -->
+            <div class="table-responsive shadow rounded">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-dark text-center">
+                    <tr>
+                        <th th:text="#{product.name}">Tên sản phẩm</th>
+                        <th th:text="#{product.price}">Giá</th>
+                        <th th:text="#{product.code}">Mã sản phẩm</th>
+                        <th th:text="#{product.description}">Mô tả</th>
+                        <th th:text="#{product.image}">Hình ảnh</th>
+                        <th th:text="#{product.thumbnail}">Thumbnail</th>
+                        <th th:text="#{product.gender}">Giới tính</th>
+                        <th th:text="#{product.size}">Kích cỡ</th>
+                        <th th:text="#{product.action}">Thao tác</th>
+                        <th th:text="#{product.category}">Danh mục</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Lặp qua các sản phẩm -->
+                    <tr th:each="p : ${products}" class="text-center">
+                        <td th:text="${p.productName}">Tên sản phẩm</td>
+                        <td>
+                            <span th:if="${p.productId.language == 'vi'}"
+                                  th:text="${#numbers.formatDecimal(p.productPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
+                            <span th:unless="${p.productId.language == 'vi'}"
+                                  th:text="'$' + ${p.productPrice}"></span>
+                        </td>
+                        <td th:text="${p.productCode}">PRD123</td>
+                        <td th:utext="${p.productDescription}">Mô tả</td>
+                        <td><img th:src="@{${p.productImage}}" class="img-thumbnail" style="width:60px; height:60px;"
+                                 alt="Product Image"></td>
+                        <td><img th:src="@{${p.productThumbnail}}" class="img-thumbnail"
+                                 style="width:60px; height:60px;" alt="Product Thumbnail"></td>
+                        <td th:text="${p.gender}">MALE</td>
+                        <td th:text="${p.size.length() > 16} ? ${p.size.substring(0, 16)} + '…' : ${p.size}"></td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a th:href="@{'/admin/product/edit?id=' + ${p.productId.id} + '&language=' + ${p.productId.language}}"
+                                   class="btn btn-sm btn-warning" title="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                <a th:href="@{'/admin/product/delete?id=' + ${p.productId.id} + '&language=' + ${p.productId.language}}"
+                                   class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"
+                                   title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                        <td th:text="${p.category.categoryName}">Nike</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PHÂN TRANG -->
+            <nav th:if="${products.totalPages > 1}" class="mt-4" aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li th:classappend="${products.first} ? 'disabled'" class="page-item">
+                        <a class="page-link"
+                           th:href="@{/admin/product(page=${products.number - 1}, size=${pageSize}, lang=${#locale.language})}">
+                            &laquo;
+                        </a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'" class="page-item">
+                        <a class="page-link"
+                           th:href="@{/admin/product(page=${i}, size=${pageSize}, lang=${#locale.language})}"
+                           th:text="${i + 1}"></a>
+                    </li>
+                    <li th:classappend="${products.last} ? 'disabled'" class="page-item">
+                        <a class="page-link"
+                           th:href="@{/admin/product(page=${products.number + 1}, size=${pageSize}, lang=${#locale.language})}">
+                            &raquo;
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

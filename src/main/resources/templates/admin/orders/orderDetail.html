@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Order</title>
+
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Bootstrap Icons -->
+    <link th:href="@{/css/bootstrap-icons.css}" rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Layout master -->
+<div th:replace="layouts/admin-layout :: layout(~{::content})">
+    <div th:fragment="content">
+        <section class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-primary">Orders Detail</h2>
+            </div>
+
+            <div class="table-responsive shadow rounded">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-dark text-center">
+                    <tr>
+                        <th scope="col">Product image</th>
+                        <th scope="col">Product Code</th>
+                        <th scope="col">Product name</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${order.orderDetails}" class="text-center">
+                        <td><img th:src="${item.product.getProductImage()}" width="50" alt=""></td>
+                        <td th:text="${item.product.getProductCode()}"></td>
+                        <td th:text="${item.product.getProductName()}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${item.price}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<div class="sidebar" th:fragment="sidebar" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+            <li class="nav-item">
+                <div class="d-flex sidebar-profile">
+                    <div class="sidebar-profile-image">
+                        <img th:src="@{/admin/images/faces/admin.png}" alt="image">
+                        <span class="sidebar-status-indicator"></span>
+                    </div>
+                    <div class="sidebar-profile-name" sec:authorize="isAuthenticated()">
+                        <p class="sidebar-name" th:with="user=${#authentication.principal}">
+                            <b th:text="${user.lastName}">Tên</b><br>
+                        </p>
+                        <p class="sidebar-designation">
+                            Welcome
+                        </p>
+                    </div>
+                </div>
+                <div class="nav-search">
+                    <div class="input-group">
+                        <!-- Form tìm kiếm sản phẩm -->
+                        <form th:action="@{/admin/product/searchProductName}" method="get" class="d-inline-block">
+                            <div class="form-group">
+                                <input type="text" th:value="${productName}" id="productName" name="productName"
+                                       class="form-control " placeholder="Type to search..." aria-label="search"
+                                       aria-describedby="search"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <p class="sidebar-menu-title">Dash menu</p>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/category}" aria-expanded="false"
+                   aria-controls="ui-basic">
+                    <i class="typcn typcn-briefcase menu-icon"></i>
+                    <span class="menu-title">Categories</span>
+                    <i class="typcn typcn-chevron-right menu-arrow"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/product}" aria-expanded="false"
+                   aria-controls="form-elements">
+                    <i class="typcn typcn-film menu-icon"></i>
+                    <span class="menu-title">Products</span>
+                    <i class="menu-arrow"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/order}" aria-expanded="false" aria-controls="charts">
+                    <i class="typcn typcn-chart-pie-outline menu-icon"></i>
+                    <span class="menu-title">Oder</span>
+                    <i class="menu-arrow"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+                    <i class="typcn typcn-th-small-outline menu-icon"></i>
+                    <span class="menu-title">User</span>
+                    <i class="menu-arrow"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/pages/documentation/documentation.html}">
+                    <i class="typcn typcn-document-text menu-icon"></i>
+                    <span class="menu-title">Documentation</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
