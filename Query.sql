@@ -1,0 +1,96 @@
+-- CREATE TABLE category (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     category_name VARCHAR(255),
+--     category_image VARCHAR(255)
+-- );
+-- 
+-- CREATE TABLE product (
+--     id VARCHAR(255) NOT NULL,
+--     `language` VARCHAR(255) NOT NULL,
+--     product_code VARCHAR(255),
+--     product_name VARCHAR(255),
+--     product_image VARCHAR(255),
+--     product_thumbnail VARCHAR(255),
+--     product_price DOUBLE,
+--     product_description TEXT,
+--     product_gender VARCHAR(50), -- enum Gender: 'Male', 'Female'
+--     product_size VARCHAR(255),  -- ví dụ: 'SIZE_39,SIZE_40,SIZE_41'
+--     category_id INT,
+--     PRIMARY KEY (id, `language`),
+--     FOREIGN KEY (category_id) REFERENCES category(id)
+-- );
+
+-- `role`-- Bảng role
+-- CREATE TABLE role (
+--     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--     name VARCHAR(255) NOT NULL UNIQUE
+-- );
+-- 
+-- -- Bảng users
+-- CREATE TABLE users (
+--     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--     username VARCHAR(255) NOT NULL UNIQUE,
+--     password VARCHAR(256) NOT NULL,
+--     enabled BOOLEAN NOT NULL,
+--     firstname VARCHAR(255),
+--     lastname VARCHAR(255),
+--     email VARCHAR(255)
+-- );
+-- 
+-- -- Bảng trung gian users_roles
+-- CREATE TABLE users_roles (
+--     user_id BIGINT NOT NULL,
+--     role_id BIGINT NOT NULL,
+--     PRIMARY KEY (user_id, role_id),
+--     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+--     FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE
+-- );
+-- CREATE TABLE orders (
+--     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--     order_date DATETIME,
+--     customer_name VARCHAR(255),
+--     address VARCHAR(255),
+-- 	 email VARCHAR(255),
+--     phone VARCHAR(20),
+--     total_price DOUBLE,
+--     user_id BIGINT,
+--		 status VARCHAR(50),
+--     FOREIGN KEY (user_id) REFERENCES users(id)
+-- );
+-- CREATE TABLE order_details (
+--     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--     order_id BIGINT NOT NULL,
+--     product_id BIGINT NOT NULL,
+--     language VARCHAR(255) NOT NULL,
+--     quantity INT NOT NULL,
+--     price DECIMAL(10, 2) NOT NULL,
+--     CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(id),
+--     CONSTRAINT fk_product FOREIGN KEY (product_id, language) REFERENCES product(id, language)
+-- );
+-- 
+
+
+-- INSERT INTO category (category_name, category_image) VALUES
+-- ('Nike', 'images/nike.jpg'),
+-- ('Adidas', 'images/adidas.jpg'),
+-- ('Puma', 'images/puma.jpg');
+
+-- Thêm sản phẩm vào bảng products (giày Nike, Adidas, Puma) với enum màu sắc, giới tính, kích cỡ
+-- INSERT INTO product (
+--     id,
+--     language,
+--     product_code,
+--     product_name,
+--     product_image,
+--     product_thumbnail,
+--     product_price,
+--     product_description,
+--     product_gender,
+--     product_size,
+--     category_id
+-- ) VALUES
+-- -- Giày Nike
+-- (1, 'vi', 'NIKE001', 'Giày Nike Air Max', 'images/nike_airmax.jpg', 'thumbs/nike_airmax_thumb.jpg', 2499000, 'Giày thể thao Nike Air Max cho nam, phong cách thời trang', 'MALE', 'SIZE_40,SIZE_41,SIZE_42', 1),
+-- (1, 'en', 'NIKE001', 'Nike Air Max Shoes', 'images/nike_airmax.jpg', 'thumbs/nike_airmax_thumb.jpg', 2499000, 'Nike Air Max sneakers for men, stylish fashion', 'MALE', 'SIZE_40,SIZE_41,SIZE_42', 1);
+
+
