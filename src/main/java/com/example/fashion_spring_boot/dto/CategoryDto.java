@@ -1,9 +1,11 @@
 package com.example.fashion_spring_boot.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
 
 public class CategoryDto {
     private int id;
+    @NotBlank(message = "Category name cannot be blank")
     private String categoryName;
     private MultipartFile categoryImage;
     private String imagePath;

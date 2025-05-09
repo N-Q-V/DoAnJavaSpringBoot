@@ -1,7 +1,6 @@
 package com.example.fashion_spring_boot.service.User;
 
 import com.example.fashion_spring_boot.dao.RoleRepository;
-import com.example.fashion_spring_boot.dao.UserRepository;
 import com.example.fashion_spring_boot.dto.RegisterUser;
 import com.example.fashion_spring_boot.entity.Role;
 import com.example.fashion_spring_boot.entity.User;

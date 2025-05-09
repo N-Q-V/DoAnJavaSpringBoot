@@ -3,10 +3,13 @@ package com.example.fashion_spring_boot.controller.admin;
 import com.example.fashion_spring_boot.dto.CategoryDto;
 import com.example.fashion_spring_boot.entity.Category;
 import com.example.fashion_spring_boot.service.categories.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -34,11 +37,18 @@ public class CategoryController {
     }
 
     @PostMapping("/save")
-    public String categorySubmit(@ModelAttribute("category") CategoryDto categoryDto, @RequestParam("oldImage") String oldImage, Model model) {
+    public String categorySubmit(@Valid @ModelAttribute("category") CategoryDto categoryDto,
+                                 BindingResult result,
+                                 @RequestParam("oldImage") String oldImage,
+                                 RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "admin/categories/category-form";
+        }
         String path = categoryService.saveFile(categoryDto.getCategoryImage(), oldImage);
         categoryDto.setImagePath(path);
         var category = categoryService.convertCategoryDtoToCategory(categoryDto);
         categoryService.save(category);
+        redirectAttributes.addFlashAttribute("msg_access", "Successfully save category!");
         return "redirect:/admin/category";
     }
 
@@ -50,8 +60,9 @@ public class CategoryController {
     }
 
     @GetMapping("/delete")
-    public String categoryDelete(@RequestParam("id") int id) {
+    public String categoryDelete(@RequestParam("id") int id, RedirectAttributes redirectAttributes) {
         categoryService.deleteFile(id);
+        redirectAttributes.addFlashAttribute("msg_deleted", "Category deleted!");
         return "redirect:/admin/category";
     }
 

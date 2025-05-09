@@ -1,11 +1,16 @@
 package com.example.fashion_spring_boot.controller.user;
 
+import com.example.fashion_spring_boot.dao.UserRepository;
+import com.example.fashion_spring_boot.dto.Cart;
 import com.example.fashion_spring_boot.dto.CheckoutForm;
 import com.example.fashion_spring_boot.entity.Order;
+import com.example.fashion_spring_boot.entity.User;
 import com.example.fashion_spring_boot.exception.CartException;
+import com.example.fashion_spring_boot.service.User.CustomUserDetails;
 import com.example.fashion_spring_boot.service.order.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,10 +24,14 @@ import java.util.List;
 @RequestMapping("/home/cart")
 public class CartController {
     final OrderService orderService;
+    final Cart cart;
+    final UserRepository userRepository;
 
     @Autowired
-    public CartController(OrderService orderService) {
+    public CartController(OrderService orderService, Cart cart, UserRepository userRepository) {
         this.orderService = orderService;
+        this.cart = cart;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/add")
@@ -51,10 +60,23 @@ public class CartController {
         return "redirect:/home/cart/view";
     }
 
-
     @GetMapping("/checkout")
     public String checkout(Model model, Principal principal) {
-        orderService.getCheckOut(model, principal);
+        CheckoutForm checkoutForm = new CheckoutForm();
+        if (principal != null) {
+            Authentication auth = (Authentication) principal;
+            CustomUserDetails userSession = (CustomUserDetails) auth.getPrincipal();
+            User user = userRepository.findByUsername(userSession.getUsername());
+            checkoutForm.setFirstName(user.getFirstName());
+            checkoutForm.setLastName(user.getLastName());
+            checkoutForm.setEmail(user.getEmail());
+            checkoutForm.setPhoneNumber(user.getPhoneNumber());
+            checkoutForm.setAddress(user.getAddress());
+            model.addAttribute("user", user);
+        }
+        model.addAttribute("cartItems", cart.getItems());
+        model.addAttribute("totalPrice", cart.getTotalPrice());
+        model.addAttribute("checkoutForm", checkoutForm);
         return "user/cart/checkout";
     }
 

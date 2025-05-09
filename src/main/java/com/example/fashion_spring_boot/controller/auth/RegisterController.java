@@ -63,12 +63,12 @@ public class RegisterController {
         User userExisting = userRepository.findByUsername(username);
         if (userExisting != null) {
             model.addAttribute("registerUser", new RegisterUser());
-            model.addAttribute("my_error", "Tài khoản đã tồn tại");
+            model.addAttribute("my_error", "Account already exists");
             return "/auth/register/form";
         }
 
         if (userRepository.existsByEmail(registerUser.getEmail())) {
-            model.addAttribute("my_error", "Email đã tồn tại");
+            model.addAttribute("my_error", "Email already exists");
             return "/auth/register/form";
         }
         User user = new User();

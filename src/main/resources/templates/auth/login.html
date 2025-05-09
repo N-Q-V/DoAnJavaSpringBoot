@@ -37,7 +37,7 @@
                             <h3>Log in to enter</h3>
                             <form class="row login_form" action="#" th:action="@{/authenticateTheUser}" method="POST">
                                 <div th:if="${param.error}" class="alert alert-danger" role="alert">
-                                    Đăng nhập không thành công, vui lòng kiểm tra lại mật khẩu hoặc tài khoản!
+                                    Login failed, please check your password or account again!
                                 </div>
                                 <div class="col-md-12 form-group">
                                     <input type="text" class="form-control" name="username" id="username" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">

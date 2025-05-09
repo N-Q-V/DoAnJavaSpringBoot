@@ -7,19 +7,19 @@ import jakarta.validation.constraints.Size;
 
 public class RegisterUser {
 
-    @NotBlank(message = "Thông tin bắt buộc")
-    @Size(min = 5, message = "Độ dài tối thiểu là 5")
+    @NotBlank(message = "Required information")
+    @Size(min = 5, message = "Minimum length is 5")
     private String username;
-    @NotBlank(message = "Thông tin bắt buộc")
-    @Size(min = 8, message = "độ dài tối thiểu là 8")
+    @NotBlank(message = "Required information")
+    @Size(min = 8, message = "Minimum length is 8")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[@#$%^&+=!])(?=\\S+$).*$",
-            message = "Mật khẩu phải chứa ít nhất 1 chữ số và 1 ký tự đặc biệt")
+            message = "Password must contain at least 1 number and 1 special character")
     private String password;
 
     private String firstName;
     private String lastName;
-    @NotBlank(message = "Thông tin bắt buộc")
-    @Email(message = "Email không hợp lệ")
+    @NotBlank(message = "Required information")
+    @Email(message = "Invalid email")
     private String email;
 
     public RegisterUser() {

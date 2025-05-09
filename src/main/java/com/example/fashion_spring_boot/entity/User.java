@@ -19,6 +19,7 @@ public class User {
     private boolean enabled;
     @Column(name = "firstname")
     private String firstName;
+
     @Column(name = "lastname")
     private String lastName;
     @Column(name = "email")

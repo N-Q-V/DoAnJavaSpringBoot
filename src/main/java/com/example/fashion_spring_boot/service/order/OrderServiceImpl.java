@@ -27,7 +27,6 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -77,26 +76,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void getCheckOut(Model model, Principal principal) {
-        CheckoutForm checkoutForm = new CheckoutForm();
-        if (principal != null) {
-            Authentication auth = (Authentication) principal;
-            CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
-            checkoutForm.setFirstName(user.getFirstName());
-            checkoutForm.setLastName(user.getLastName());
-            checkoutForm.setEmail(user.getEmail());
-            checkoutForm.setPhoneNumber(user.getPhoneNumber());
-            checkoutForm.setAddress(user.getAddress());
-            model.addAttribute("user", user);
-        }
-        model.addAttribute("cartItems", cart.getItems());
-        model.addAttribute("totalPrice", cart.getTotalPrice());
-        model.addAttribute("checkoutForm", checkoutForm);
+    public void getCheckOut(Principal principal) {
+
     }
 
     @Override
     public void postCheckOut(@Valid @ModelAttribute("checkoutForm") CheckoutForm checkoutForm, BindingResult result, Principal principal, Model model) {
-        long user_id = 5L; // Guest
+        long user_id = 2L; // Guest
         if (principal != null) {
             Authentication auth = (Authentication) principal;
             CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
@@ -106,12 +92,12 @@ public class OrderServiceImpl implements OrderService {
         // Tìm người dùng
         User user = userService.findById(user_id);
         if (user == null) {
-            throw new CartException("Không tìm thấy người dùng.");
+            throw new CartException("User not found.");
         }
 
         // Kiểm tra nếu giỏ hàng trống
         if (cart.getItems().isEmpty()) {
-            throw new CartException("Không thể thanh toán vì giỏ hàng trống.");
+            throw new CartException("Cannot checkout because cart is empty.");
         }
 
         // Tạo đơn hàng
@@ -143,7 +129,7 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(order);
             cart.clear();
         } catch (Exception e) {
-            throw new CartException("Không thể lưu đơn hàng.");
+            throw new CartException("Unable to save order.");
         }
     }
 

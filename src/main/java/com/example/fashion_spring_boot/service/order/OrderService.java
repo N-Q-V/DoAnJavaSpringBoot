@@ -18,7 +18,7 @@ public interface OrderService {
 
     void viewCart(Model model);
 
-    void getCheckOut(Model model, Principal principal);
+    void getCheckOut(Principal principal);
 
     void postCheckOut(CheckoutForm checkoutForm, BindingResult result, Principal principal, Model model);
 

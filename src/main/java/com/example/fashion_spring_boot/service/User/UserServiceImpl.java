@@ -3,6 +3,9 @@ package com.example.fashion_spring_boot.service.User;
 import com.example.fashion_spring_boot.dao.UserRepository;
 import com.example.fashion_spring_boot.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -39,5 +42,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public Page<User> findALlUser(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAllByOrderByIdDesc(pageable);
     }
 }
